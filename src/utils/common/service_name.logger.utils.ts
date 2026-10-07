@@ -5,6 +5,7 @@ export const SERVICES = Object.freeze({
   UTILS: 'utils',
   ERRORS: 'errors',
   MIDDLEWARE: 'middleware',
+  DATABASE: 'database-layer',
   ROUTER: 'router',
   MAIN: 'main-server',
 } as const)
