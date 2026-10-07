@@ -18,7 +18,6 @@ const UserSchema = new mongoose.Schema(
     username: {
       type: String,
       required: [false, 'Not nesscery '],
-      unique: true, // Prevents duplicate usernames
       trim: true, // Removes leading/trailing whitespace
       lowercase: true, // Optional: makes usernames case-insensitive (highly recommended)
       minlength: [3, 'Username must be at least 3 characters long.'],
@@ -61,7 +60,7 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
-UserSchema.pre('save', function (this: IUser) {
+UserSchema.pre('validate', function (this: IUser) {
   if (!this.isModified('email') && this.avatar) {
     return Promise.resolve()
   }
@@ -78,3 +77,7 @@ UserSchema.pre('save', function (this: IUser) {
     return Promise.reject(error)
   }
 })
+
+const User = mongoose.model('User', UserSchema)
+
+export default User

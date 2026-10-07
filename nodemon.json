@@ -1,6 +1,7 @@
 {
-  "watch": ["dist"],
-  "ext": "js,json",
-  "ignore": ["node_modules"],
-  "exec": "node dist/index.js"
+  "watch": ["src"],
+  "ext": "ts",
+  "ignore": ["dist", "node_modules"],
+  "delay": "250ms",
+  "exec": "npm run build && node dist/index.js"
 }

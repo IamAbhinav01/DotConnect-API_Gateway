@@ -1,6 +1,8 @@
 import express, { type Request, type Response } from 'express'
-import ServerConfiguration from './config/index.js'
 import { SERVICES } from './utils/common/service_name.logger.utils.js'
+import EnvConfiguration from './config/env.config.js'
+import { getLogger } from './config/logger.config.js'
+import { connectToDB } from './config/db.config.js'
 
 const app = express()
 
@@ -8,8 +10,9 @@ app.get('/ping', (req: Request, res: Response) => {
   return res.status(200).json({ message: 'Hello Pong!' })
 })
 
-app.listen(ServerConfiguration.EnvConfiguration.PORT, () => {
-  ServerConfiguration.LoggerConfiguration.getLogger(SERVICES.MAIN).info(
-    `Server listening on port ${ServerConfiguration.EnvConfiguration.PORT}`
+await connectToDB()
+app.listen(EnvConfiguration.PORT, () => {
+  getLogger(SERVICES.MAIN).info(
+    `Server listening on port ${EnvConfiguration.PORT}`
   )
 })
