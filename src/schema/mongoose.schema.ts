@@ -1,4 +1,4 @@
-import mongoose, { Document } from 'mongoose'
+import mongoose, { Document, type InferSchemaType } from 'mongoose'
 import validator from 'validator'
 
 import { Style, Avatar } from '@dicebear/core'
@@ -78,6 +78,12 @@ UserSchema.pre('validate', function (this: IUser) {
   }
 })
 
-const User = mongoose.model('User', UserSchema)
+export type UserType = InferSchemaType<typeof UserSchema>
 
-export default User
+export const User = mongoose.model('User', UserSchema)
+
+export interface UserInput {
+  username: string
+  email: string
+  password: string
+}
