@@ -2,12 +2,12 @@ export interface CreateUserDto {
   username?: string
   email: string
   password: string
-}
+} // i had used it in the user creatiion crud repo
 
 export interface UpdateUserDto {
   username?: string
   email?: string
-}
+} // i had used it in the user updation crud repo
 
 export interface ChangePasswordDto {
   currentPassword: string
