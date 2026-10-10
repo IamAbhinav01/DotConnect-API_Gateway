@@ -4,15 +4,15 @@ interface IOperations<T, TCreate extends Partial<T>> {
   create(data: TCreate): Promise<HydratedDocument<T>>
   findByID(id: string): Promise<HydratedDocument<T> | null>
   findAll(): Promise<HydratedDocument<T>[]>
-  delete(): void
   updateByID(id: string, data: TCreate): Promise<HydratedDocument<T> | null>
+  delete(id: string): Promise<HydratedDocument<T> | null>
 }
 
 export class CrudOperations<
   T,
   TCreate extends Partial<T>,
 > implements IOperations<T, TCreate> {
-  constructor(protected model: Model<T>) {}
+  constructor(protected readonly model: Model<T>) {}
 
   async create(data: TCreate): Promise<HydratedDocument<T>> {
     return this.model.create(data)
@@ -36,5 +36,9 @@ export class CrudOperations<
         runValidators: true,
       })
       .exec()
+  }
+
+  async delete(id: string): Promise<HydratedDocument<T> | null> {
+    return this.model.findByIdAndDelete(id).exec()
   }
 }
