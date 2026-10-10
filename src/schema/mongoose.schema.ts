@@ -51,6 +51,7 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Password is required.'],
       minlength: [8, 'Password must be at least 8 characters long.'],
+      select: false,
     },
     avatar: {
       type: String,
@@ -81,9 +82,3 @@ UserSchema.pre('validate', function (this: IUser) {
 export type UserType = InferSchemaType<typeof UserSchema>
 
 export const User = mongoose.model('User', UserSchema)
-
-export interface UserInput {
-  username: string
-  email: string
-  password: string
-}
