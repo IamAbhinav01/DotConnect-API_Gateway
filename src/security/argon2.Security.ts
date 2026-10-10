@@ -1,16 +1,34 @@
+import EnvConfiguration from '../config/env.config.js'
+
 interface Argon2 {
-  Hashpassword: void
-  VerifyPassword: void
+  hashPassword(password: string): Promise<string>
+  verifyPassword(password: string, hashedPassword: string): Promise<boolean>
 }
 
-interface Argon2Config {
-  hashRaw: Uint8Array // Equivelant to []byte
-  salt: Uint8Array // Equivelant to []byte
-  timeCost: number // Equivelant to uint32 (iterations)
-  memoryCost: number // Equivelant to uint32 (in KiB)
-  threads: number // Equivelant to uint8 (parallelism)
-  keyLength: number // Equivelant to uint32 (hash length)
-}
+export class Argon2Configuration implements Argon2 {
+  salt: Uint8Array
+  timeCost: number
+  memoryCost: number
+  threads: number
+  keyLength: number
 
-async function hashPasssword(): void {}
-async function verifyPassword(): void {}
+  constructor() {
+    this.salt = new Uint8Array(Number(EnvConfiguration.SALT_SIZE))
+
+    this.timeCost = Number(EnvConfiguration.TIMECOST)
+    this.memoryCost = Number(EnvConfiguration.MEMORYCOST)
+    this.threads = Number(EnvConfiguration.THREADS)
+    this.keyLength = Number(EnvConfiguration.KEYLENGTH)
+  }
+
+  async hashPassword(password: string): Promise<string> {
+    throw new Error('Not implemented')
+  }
+
+  async verifyPassword(
+    password: string,
+    hashedPassword: string
+  ): Promise<boolean> {
+    throw new Error('Not implemented')
+  }
+}
