@@ -10,6 +10,7 @@ const EnvConfiguration = {
   MEMORYCOST: process.env.MemoryCost,
   THREADS: process.env.Threads,
   KEYLENGTH: process.env.KeyLength,
+  JWT_SECRET: process.env.JWT_SECRET,
 }
 
 export default EnvConfiguration

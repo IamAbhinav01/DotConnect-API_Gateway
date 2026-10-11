@@ -24,3 +24,11 @@ export class FailedConnection extends ApplicationError {
     super('Failed-Connection', message, StatusCodes.BAD_GATEWAY)
   }
 }
+
+export class AuthSignUpError extends ApplicationError {
+  constructor(
+    message = 'Error occured after response transfered to the service layer'
+  ) {
+    super('INTERNAL-SERVER-ERROR', message, StatusCodes.INTERNAL_SERVER_ERROR)
+  }
+}
