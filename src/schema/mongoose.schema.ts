@@ -3,8 +3,11 @@ import validator from 'validator'
 
 import { Style, Avatar } from '@dicebear/core'
 import lorelei from '@dicebear/styles/lorelei.json' with { type: 'json' }
+import { Argon2Configuration } from '../security/argon2.Security.js'
 
 const DieIcestyle = new Style(lorelei)
+
+const arg = new Argon2Configuration()
 
 interface IUser extends Document {
   username?: string
@@ -60,6 +63,13 @@ const UserSchema = new mongoose.Schema(
   },
   { timestamps: true }
 )
+
+UserSchema.pre('save', async function (this: IUser) {
+  if (this.isModified('password')) {
+    this.password = await arg.hashPassword(this.password)
+  }
+  return Promise.resolve()
+})
 
 UserSchema.pre('validate', function (this: IUser) {
   if (!this.isModified('email') && this.avatar) {

@@ -6,6 +6,7 @@ export const SERVICES = Object.freeze({
   ERRORS: 'errors',
   MIDDLEWARE: 'middleware',
   DATABASE: 'database-layer',
+  SECURITY: 'argon2-layer',
   ROUTER: 'router',
   MAIN: 'main-server',
 } as const)
