@@ -37,3 +37,23 @@ export const validateSignup: RequestHandler = (req, _res, next) => {
 
   return next()
 }
+
+export const validateLogin: RequestHandler = (req, _res, next) => {
+  const body: unknown = req.body
+  if (typeof body !== 'object' || body === null || Array.isArray(body)) {
+    return next(new BadRequestError('Request body must be a JSON object'))
+  }
+
+  const payload = body as Record<string, unknown>
+  const { email, password } = payload
+
+  if (typeof email !== 'string' || !validator.isEmail(email)) {
+    return next(new BadRequestError('A valid email address is required'))
+  }
+
+  if (typeof password !== 'string' || password.length === 0) {
+    return next(new BadRequestError('Password is required'))
+  }
+
+  return next()
+}

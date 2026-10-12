@@ -23,6 +23,12 @@ export class BadRequestError extends ApplicationError {
   }
 }
 
+export class UnauthorizedError extends ApplicationError {
+  constructor(message = 'Authentication required') {
+    super('UNAUTHORIZED', message, StatusCodes.UNAUTHORIZED)
+  }
+}
+
 export class FailedConnection extends ApplicationError {
   constructor(
     message = 'Failed to establish connection to the server , check the connection link or api '
