@@ -1,4 +1,5 @@
 declare const EnvConfiguration: {
+    NODE_ENV: string | undefined;
     PORT: number;
     LOG_LEVEL: string | undefined;
     MONGODB_URI: string | undefined;

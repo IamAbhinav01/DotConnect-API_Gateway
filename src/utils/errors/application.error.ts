@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes'
 
-class ApplicationError extends Error {
+export class ApplicationError extends Error {
   public readonly statusCode: number
   constructor(name: string, message: string, statusCode: number) {
     super(message)
@@ -14,6 +14,12 @@ class ApplicationError extends Error {
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, this.constructor)
     }
+  }
+}
+
+export class BadRequestError extends ApplicationError {
+  constructor(message: string) {
+    super('BAD-REQUEST', message, StatusCodes.BAD_REQUEST)
   }
 }
 
