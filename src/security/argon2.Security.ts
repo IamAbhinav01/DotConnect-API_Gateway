@@ -50,7 +50,6 @@ export class Argon2Configuration implements Argon2 {
         type: argon2.argon2id,
       })
       getLogger(SERVICES.SECURITY).info('Succesfully encoded the hash')
-      console.log('Hashed Password is : ', encodedHash)
       return encodedHash
     } catch (error) {
       getLogger(SERVICES.SECURITY).error(

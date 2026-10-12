@@ -9,9 +9,13 @@ import { UserRepository } from '../repositories/user.Repositories.js'
 import { SERVICES } from '../utils/common/service_name.logger.utils.js'
 import { UnauthorizedError } from '../utils/errors/application.error.js'
 
+const DUMMY_PASSWORD_HASH =
+  '$argon2id$v=19$m=65536,p=4,t=2$bnxE4QYFMyyBxfwGlLSsCQ$Ux28E9YwD/PUfVQYi1kbUIrYlAYqXG7tDL5n3oFNdt0'
+
 interface UserService {
   User_SignUp(payload: CreateUserDto): Promise<UserResponseDto>
   User_Login(payload: LoginDto): Promise<UserResponseDto>
+  User_CurrentUser(userId: string): Promise<UserResponseDto>
 }
 
 const userRepository = new UserRepository()
@@ -42,10 +46,12 @@ async function userLogin(payload: LoginDto): Promise<UserResponseDto> {
   const user = await userRepository.findByEmail(
     payload.email.trim().toLowerCase()
   )
-  if (
-    !user ||
-    !(await passwordSecurity.verifyPassword(payload.password, user.password))
-  ) {
+  const passwordMatches = await passwordSecurity.verifyPassword(
+    payload.password,
+    user?.password ?? DUMMY_PASSWORD_HASH
+  )
+
+  if (!user || !passwordMatches) {
     throw new UnauthorizedError('Invalid email or password')
   }
 
@@ -53,8 +59,18 @@ async function userLogin(payload: LoginDto): Promise<UserResponseDto> {
   return toUserResponse(user)
 }
 
+async function userCurrentUser(userId: string): Promise<UserResponseDto> {
+  const user = await userRepository.findByID(userId)
+  if (!user) {
+    throw new UnauthorizedError()
+  }
+
+  return toUserResponse(user)
+}
+
 export const userService = {
   User_SignUp: userSignUp,
   User_Login: userLogin,
+  User_CurrentUser: userCurrentUser,
 } satisfies UserService
 //satisfies UserService checks that the object has the required methods with compatible signatures.
