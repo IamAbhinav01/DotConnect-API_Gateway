@@ -41,3 +41,36 @@ export const getCurrentUser = async (
   )
   return res.status(200).json({ user })
 }
+
+export const findUserById = async (
+  req: Request<{ userId: string }>,
+  res: Response<unknown, AuthenticatedLocals>
+) => {
+  const user: UserResponseDto = await userService.User_CurrentUser(
+    req.params.userId
+  )
+  return res.status(200).json({ user })
+}
+
+export const listUsers = async (_req: Request, res: Response) => {
+  const users: UserResponseDto[] = await userService.Admin_ListUsers()
+  return res.status(200).json({ users })
+}
+
+export const deleteUser = async (
+  req: Request<{ userId: string }>,
+  res: Response
+) => {
+  await userService.Admin_DeleteUser(req.params.userId)
+  return res.status(200).json({ message: 'User deleted successfully' })
+}
+
+export const promoteUser = async (
+  req: Request<{ userId: string }>,
+  res: Response
+) => {
+  const user: UserResponseDto = await userService.Admin_PromoteUser(
+    req.params.userId
+  )
+  return res.status(200).json({ user })
+}

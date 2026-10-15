@@ -1,3 +1,6 @@
+export const USER_ROLES = ['user', 'admin'] as const
+export type UserRole = (typeof USER_ROLES)[number]
+
 export interface CreateUserDto {
   username?: string
   email: string
@@ -19,6 +22,7 @@ export interface UserResponseDto {
   username?: string
   email: string
   avatar: string
+  role: UserRole
   createdAt: Date
   updatedAt: Date
 }

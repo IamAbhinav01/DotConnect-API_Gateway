@@ -4,6 +4,7 @@ import validator from 'validator'
 import { Style, Avatar } from '@dicebear/core'
 import lorelei from '@dicebear/styles/lorelei.json' with { type: 'json' }
 import { Argon2Configuration } from '../security/argon2.Security.js'
+import { USER_ROLES } from '../DTO/users.dto.js'
 
 const DieIcestyle = new Style(lorelei)
 
@@ -58,6 +59,12 @@ const UserSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      enum: USER_ROLES,
+      default: 'user',
       required: true,
     },
   },

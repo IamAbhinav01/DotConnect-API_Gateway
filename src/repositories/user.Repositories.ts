@@ -15,4 +15,18 @@ export class UserRepository extends CrudOperations<
   async findByEmail(email: string): Promise<HydratedDocument<UserType> | null> {
     return this.model.findOne({ email }).select('+password').exec()
   }
+
+  async findAll(): Promise<HydratedDocument<UserType>[]> {
+    return this.model.find({}).exec()
+  }
+
+  async promoteToAdmin(id: string): Promise<HydratedDocument<UserType> | null> {
+    return this.model
+      .findByIdAndUpdate(
+        id,
+        { role: 'admin' },
+        { new: true, runValidators: true }
+      )
+      .exec()
+  }
 }

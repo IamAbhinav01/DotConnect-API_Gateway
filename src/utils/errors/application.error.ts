@@ -29,6 +29,18 @@ export class UnauthorizedError extends ApplicationError {
   }
 }
 
+export class ForbiddenError extends ApplicationError {
+  constructor(message = 'Insufficient permissions') {
+    super('FORBIDDEN', message, StatusCodes.FORBIDDEN)
+  }
+}
+
+export class NotFoundError extends ApplicationError {
+  constructor(message = 'Resource not found') {
+    super('NOT-FOUND', message, StatusCodes.NOT_FOUND)
+  }
+}
+
 export class FailedConnection extends ApplicationError {
   constructor(
     message = 'Failed to establish connection to the server , check the connection link or api '
