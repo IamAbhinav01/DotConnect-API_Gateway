@@ -28,3 +28,19 @@ export const clearToken = (res: Response) => {
     expires: new Date(0),
   })
 }
+
+export const GenerateInternalToken = (userId: string, role: string): string => {
+  const internalSecret = EnvConfiguration.INTERNAL_SECRET
+
+  if (!internalSecret) {
+    throw new Error('INTERNAL_SECRET environment variable is required')
+  }
+
+  const token = jwt.sign(
+    { userId, role, iss: 'api-gateway', aud: 'dotconnect-go-service' },
+    internalSecret,
+    { expiresIn: '2m' }
+  )
+
+  return token
+}
