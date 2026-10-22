@@ -27,6 +27,13 @@ export interface UserResponseDto {
   updatedAt: Date
 }
 
+export interface FindUserResponseDTO {
+  id: string
+  username?: string
+  email: string
+  avatar: string
+}
+
 export interface LoginDto {
   email: string
   password: string

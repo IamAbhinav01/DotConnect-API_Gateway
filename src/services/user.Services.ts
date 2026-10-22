@@ -1,6 +1,7 @@
 import { getLogger } from '../config/logger.config.js'
 import type {
   CreateUserDto,
+  FindUserResponseDTO,
   LoginDto,
   UserResponseDto,
 } from '../DTO/users.dto.js'
@@ -22,7 +23,7 @@ interface UserService {
   User_SignUp(payload: CreateUserDto): Promise<UserResponseDto>
   User_Login(payload: LoginDto): Promise<UserResponseDto>
   User_CurrentUser(userId: string): Promise<UserResponseDto>
-
+  User_Search(query: string): Promise<FindUserResponseDTO[]>
   Admin_ListUsers(): Promise<UserResponseDto[]>
   Admin_DeleteUser(userId: string): Promise<void>
   Admin_PromoteUser(userId: string): Promise<UserResponseDto>
@@ -79,6 +80,19 @@ async function userCurrentUser(userId: string): Promise<UserResponseDto> {
   return toUserResponse(user)
 }
 
+async function findUser(query: string): Promise<FindUserResponseDTO[]> {
+  const users = await userRepository.findUser(query)
+  return users.map((u) => {
+    const username = u.username ?? (u.email as string).split('@')[0]
+    return {
+      id: u._id.toString(),
+      ...(username === undefined ? {} : { username }),
+      email: u.email as string,
+      avatar: `/api/v1/users/${u._id}/avatar`,
+    }
+  })
+}
+
 async function adminListUsers(): Promise<UserResponseDto[]> {
   const users = await userRepository.findAll()
   return users.map(toUserResponse)
@@ -112,6 +126,7 @@ export const userService = {
   User_SignUp: userSignUp,
   User_Login: userLogin,
   User_CurrentUser: userCurrentUser,
+  User_Search: findUser,
   Admin_ListUsers: adminListUsers,
   Admin_DeleteUser: adminDeleteUser,
   Admin_PromoteUser: adminPromoteUser,

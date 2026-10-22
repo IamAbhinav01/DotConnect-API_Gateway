@@ -9,6 +9,8 @@ declare const EnvConfiguration: {
     THREADS: string | undefined;
     KEYLENGTH: string | undefined;
     JWT_SECRET: string | undefined;
+    INTERNAL_SECRET: string | undefined;
+    BACKEND_GO_SERVICE: string | undefined;
 };
 export default EnvConfiguration;
 //# sourceMappingURL=env.config.d.ts.map

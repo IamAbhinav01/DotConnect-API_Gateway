@@ -97,5 +97,7 @@ UserSchema.pre('validate', function (this: IUser) {
 })
 
 export type UserType = InferSchemaType<typeof UserSchema>
-
+export type UserSearchResult = Pick<UserType, 'username' | 'email'> & {
+  _id: mongoose.Types.ObjectId
+}
 export const User = mongoose.model('User', UserSchema)

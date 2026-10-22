@@ -1,6 +1,10 @@
 import type { HydratedDocument } from 'mongoose'
 import type { CreateUserDto, UpdateUserDto } from '../DTO/users.dto.js'
-import { User, type UserType } from '../schema/mongoose.schema.js'
+import {
+  User,
+  type UserSearchResult,
+  type UserType,
+} from '../schema/mongoose.schema.js'
 import { CrudOperations } from './crud.Repository.js'
 
 export class UserRepository extends CrudOperations<
@@ -18,6 +22,20 @@ export class UserRepository extends CrudOperations<
 
   async findAll(): Promise<HydratedDocument<UserType>[]> {
     return this.model.find({}).exec()
+  }
+
+  async findUser(q: string): Promise<UserSearchResult[]> {
+    return this.model
+      .find({
+        $or: [
+          { username: { $regex: q, $options: 'i' } },
+          { email: { $regex: q, $options: 'i' } },
+        ],
+      })
+      .select('username email')
+      .limit(10)
+      .lean<UserSearchResult[]>()
+      .exec()
   }
 
   async promoteToAdmin(id: string): Promise<HydratedDocument<UserType> | null> {
