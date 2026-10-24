@@ -24,6 +24,7 @@ interface UserService {
   User_Login(payload: LoginDto): Promise<UserResponseDto>
   User_CurrentUser(userId: string): Promise<UserResponseDto>
   User_Search(query: string): Promise<FindUserResponseDTO[]>
+  Get_Avatar(userId: string): Promise<string>
   Admin_ListUsers(): Promise<UserResponseDto[]>
   Admin_DeleteUser(userId: string): Promise<void>
   Admin_PromoteUser(userId: string): Promise<UserResponseDto>
@@ -93,6 +94,20 @@ async function findUser(query: string): Promise<FindUserResponseDTO[]> {
   })
 }
 
+async function getAvatar(userId: string): Promise<string> {
+  if (!mongoose.isValidObjectId(userId)) {
+    throw new BadRequestError('Invalid user id')
+  }
+  const user = await userRepository.findByID(userId)
+  if (!user) {
+    throw new NotFoundError('User not found')
+  }
+  if (!user.avatar) {
+    throw new NotFoundError('no avatar found')
+  }
+  return user.avatar
+}
+
 async function adminListUsers(): Promise<UserResponseDto[]> {
   const users = await userRepository.findAll()
   return users.map(toUserResponse)
@@ -127,6 +142,7 @@ export const userService = {
   User_Login: userLogin,
   User_CurrentUser: userCurrentUser,
   User_Search: findUser,
+  Get_Avatar: getAvatar,
   Admin_ListUsers: adminListUsers,
   Admin_DeleteUser: adminDeleteUser,
   Admin_PromoteUser: adminPromoteUser,
