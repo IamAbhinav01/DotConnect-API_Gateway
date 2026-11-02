@@ -7,14 +7,23 @@ export const ResolveEmailUser = async (
   res: Response,
   next: NextFunction
 ) => {
+  const role = req.body?.role ?? 'member'
+
+  // If userId is already provided (from table button click), forward directly!
+  if (req.body?.userId) {
+    req.body = {
+      userId: req.body.userId,
+      role: role,
+    }
+    return next()
+  }
+
   const email = String(req.body?.email ?? '')
     .trim()
     .toLowerCase()
 
-  const role = req.body?.role ?? 'member'
-
   if (!email) {
-    return next(new BadRequestError('Email is required'))
+    return next(new BadRequestError('Email or User ID is required'))
   }
 
   const user = await User.findOne({ email }).select('_id email').lean()
