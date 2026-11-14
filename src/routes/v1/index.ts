@@ -60,21 +60,9 @@ v1Router.delete(
   memberResolutionProxy
 )
 
-v1Router.delete(
-  '/workspace/:slug/removeWorkspace',
-  verifyJWT,
-  inviteProxy
-)
-v1Router.post(
-  '/workspace/:slug/removeWorkspace',
-  verifyJWT,
-  inviteProxy
-)
-v1Router.post(
-  '/workspace/:slug/update',
-  verifyJWT,
-  inviteProxy
-)
+v1Router.delete('/workspace/:slug/removeWorkspace', verifyJWT, inviteProxy)
+v1Router.post('/workspace/:slug/removeWorkspace', verifyJWT, inviteProxy)
+v1Router.post('/workspace/:slug/update', verifyJWT, inviteProxy)
 
 v1Router.post('/workspace/:slug/invites', verifyJWT, inviteProxy)
 v1Router.get('/workspace/:slug/invites', verifyJWT, inviteProxy)

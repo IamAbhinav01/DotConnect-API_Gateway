@@ -9,6 +9,7 @@ export const SERVICES = Object.freeze({
   SECURITY: 'argon2-layer',
   ROUTER: 'router',
   MAIN: 'main-server',
+  REDIS: 'redis',
 } as const)
 
 export type ServiceName = (typeof SERVICES)[keyof typeof SERVICES]
