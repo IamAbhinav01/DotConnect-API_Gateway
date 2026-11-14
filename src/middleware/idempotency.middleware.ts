@@ -5,6 +5,12 @@ import redis from '../config/redis.config.js'
 
 const logger = getLogger(SERVICES.MIDDLEWARE)
 
+interface CachedResponse {
+  statusCode: number
+  headers: Record<string, string>
+  body: unknown
+}
+
 export const IdempotencyMiddleware = async (
   req: Request,
   res: Response,
@@ -28,10 +34,31 @@ export const IdempotencyMiddleware = async (
         })
       }
       if (valueExsists) {
-        return
+        const cachedResponse: CachedResponse = JSON.parse(valueExsists)
+        res.setHeader('x-cache-lookup', 'HIT-IDEMPOTENT')
+        res.status(cachedResponse.statusCode).json(cachedResponse.body)
+        return res
       }
     }
-
+    const originalJson = res.json.bind(res)
+    res.json = (body: unknown): Response => {
+      // Only cache successful mutations (2xx)
+      if (res.statusCode >= 200 && res.statusCode < 300) {
+        const payload: CachedResponse = {
+          statusCode: res.statusCode,
+          headers: { 'content-type': 'application/json' },
+          body,
+        }
+        // Save to Redis for 24 hours (86400 seconds)
+        redis
+          .set(redisKey, JSON.stringify(payload), 'EX', 86400)
+          .catch(console.error)
+      } else {
+        // If operation failed (4xx, 5xx), release the lock so the user can retry
+        redis.del(redisKey).catch(console.error)
+      }
+      return originalJson(body)
+    }
     next()
   } catch (err) {
     logger.error(`error occured while checking the idempotency : ${err}`)
