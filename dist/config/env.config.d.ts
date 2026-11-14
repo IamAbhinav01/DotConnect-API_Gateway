@@ -11,6 +11,8 @@ declare const EnvConfiguration: {
     JWT_SECRET: string | undefined;
     INTERNAL_SECRET: string | undefined;
     BACKEND_GO_SERVICE: string | undefined;
+    REDIS_HOST: string | undefined;
+    REDIS_PORT: string | undefined;
 };
 export default EnvConfiguration;
 //# sourceMappingURL=env.config.d.ts.map

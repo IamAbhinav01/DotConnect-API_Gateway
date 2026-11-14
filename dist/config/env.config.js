@@ -13,6 +13,8 @@ const EnvConfiguration = {
     JWT_SECRET: process.env.JWT_SECRET,
     INTERNAL_SECRET: process.env.INTERNAL_SECRET,
     BACKEND_GO_SERVICE: process.env.BACKEND_GO_SERVICE,
+    REDIS_HOST: process.env.REDIS_HOST,
+    REDIS_PORT: process.env.REDIS_PORT,
 };
 export default EnvConfiguration;
 //# sourceMappingURL=env.config.js.map

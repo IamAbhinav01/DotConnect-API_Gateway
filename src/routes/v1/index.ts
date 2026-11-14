@@ -4,6 +4,7 @@ import { verifyJWT } from '../../middleware/auth.middleware.js'
 import { GenerateInternalToken } from '../../utils/jwt/jwt.utils.js'
 import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware'
 import { ResolveEmailUser } from '../../middleware/workspace.middleware.js'
+import { IdempotencyMiddleware } from '../../middleware/idempotency.middleware.js'
 
 const v1Router = express.Router()
 
@@ -86,6 +87,12 @@ v1Router.post(
 v1Router.post(
   '/workspace/:slug/request/:requestId/reject',
   verifyJWT,
+  inviteProxy
+)
+v1Router.post(
+  '/workspace/:slug/channels',
+  verifyJWT,
+  IdempotencyMiddleware,
   inviteProxy
 )
 v1Router.get('/workspace/invite/:code', verifyJWT, inviteProxy)

@@ -21,6 +21,13 @@ export const IdempotencyMiddleware = async (
     return next()
   }
   const userID = res.locals.userId
+  if (!userID) {
+    res.status(401).json({
+      error: 'Unauthorized',
+      message: 'User authentication is required.',
+    })
+    return
+  }
   const redisKey = `idempotency:${userID}:${idempotencyKey}`
   try {
     const redisSet = await redis.set(redisKey, 'IN_PROGRESS', 'EX', 60, 'NX')
@@ -28,16 +35,17 @@ export const IdempotencyMiddleware = async (
     if (!redisSet) {
       const valueExsists = await redis.get(redisKey)
       if (valueExsists == 'IN_PROGRESS') {
-        return res.status(409).json({
+        res.status(409).json({
           error: 'Conflict',
           message: 'An identical request is currently processing. Please wait.',
         })
+        return
       }
       if (valueExsists) {
         const cachedResponse: CachedResponse = JSON.parse(valueExsists)
         res.setHeader('x-cache-lookup', 'HIT-IDEMPOTENT')
         res.status(cachedResponse.statusCode).json(cachedResponse.body)
-        return res
+        return
       }
     }
     const originalJson = res.json.bind(res)
