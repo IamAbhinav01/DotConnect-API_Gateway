@@ -9,6 +9,8 @@ x-api-common: &api-common
     PORT: 3000
     MONGODB_URI: "mongodb://${MONGO_ROOT_USERNAME:?Set MONGO_ROOT_USERNAME in .env}:${MONGO_ROOT_PASSWORD:?Set MONGO_ROOT_PASSWORD in .env}@db:27017/dotconnect?authSource=admin"
     JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env}
+    INTERNAL_SECRET: ${INTERNAL_SECRET:?Set INTERNAL_SECRET in .env}
+    BACKEND_GO_SERVICE: ${BACKEND_GO_SERVICE:-http://host.docker.internal:4000}
     salt_size: ${salt_size:-16}
     TimeCost: ${TimeCost:-2}
     MemoryCost: ${MemoryCost:-65536}

@@ -5,14 +5,17 @@ import { GenerateInternalToken } from '../../utils/jwt/jwt.utils.js'
 import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware'
 import { ResolveEmailUser } from '../../middleware/workspace.middleware.js'
 import { IdempotencyMiddleware } from '../../middleware/idempotency.middleware.js'
+import EnvConfiguration from '../../config/env.config.js'
 
 const v1Router = express.Router()
+const backendTarget =
+  EnvConfiguration.BACKEND_GO_SERVICE || 'http://localhost:4000'
 
 v1Router.use('/users', userRoutes)
 
 // Invite & direct routes — only need JWT auth, no email resolution
 const inviteProxy = createProxyMiddleware({
-  target: 'http://localhost:4000',
+  target: backendTarget,
   changeOrigin: true,
   on: {
     proxyReq: (proxyReq, req: Request, res: Response) => {
@@ -29,7 +32,7 @@ const inviteProxy = createProxyMiddleware({
 
 // Routes that need email→userId resolution (member add/promote/demote/remove)
 const memberResolutionProxy = createProxyMiddleware({
-  target: 'http://localhost:4000',
+  target: backendTarget,
   changeOrigin: true,
   on: {
     proxyReq: (proxyReq, req: Request, res: Response) => {
@@ -95,6 +98,7 @@ v1Router.post(
   IdempotencyMiddleware,
   inviteProxy
 )
+v1Router.post('/channel', verifyJWT, IdempotencyMiddleware, inviteProxy)
 v1Router.get('/workspace/invite/:code', verifyJWT, inviteProxy)
 v1Router.get('/workspace/invites/:code', verifyJWT, inviteProxy)
 v1Router.post('/workspace/invite/:code/request', verifyJWT, inviteProxy)
@@ -105,7 +109,7 @@ v1Router.use(
   '/workspace',
   verifyJWT,
   createProxyMiddleware({
-    target: 'http://localhost:4000',
+    target: backendTarget,
     changeOrigin: true,
     on: {
       proxyReq: (proxyReq, req: Request, res: Response) => {
