@@ -98,6 +98,11 @@ v1Router.post(
   IdempotencyMiddleware,
   inviteProxy
 )
+v1Router.post(
+  '/workspace/:slug/channels/:channelId/join',
+  verifyJWT,
+  inviteProxy
+)
 v1Router.post('/channel', verifyJWT, IdempotencyMiddleware, inviteProxy)
 v1Router.get('/workspace/invite/:code', verifyJWT, inviteProxy)
 v1Router.get('/workspace/invites/:code', verifyJWT, inviteProxy)
